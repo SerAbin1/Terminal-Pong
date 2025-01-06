@@ -14,7 +14,7 @@ void game();
 
 #include <ncurses.h>
 struct Coordinate {
-    int x, y;
+    int horizontal, vertical;
 };
 
 int main () {
@@ -31,42 +31,42 @@ int main () {
 }
 
 void game(){
-    Coordinate ball, plank1, plank2;
-    int plank1_direction = 1; //Initial direction is right
-    int max_y, max_x;
-    getmaxyx(stdscr, max_y, max_x);
+    Coordinate ball, bottom_plank, top_plank;
+    int bottom_plank_direction = 1; //Initial direction is right
+    int max_rows, max_columns;
+    getmaxyx(stdscr, max_rows, max_columns);
     int left = 0;
-    int right = max_y;
-    int center_x = max_y / 2;
+    int bottom = max_rows - 1;
+    int center_rows = max_rows / 2;
     int top = 0;
-    int down = max_x;
-    int center_y = max_x / 2;
+    int right = max_columns - 1;
+    int center_columns = max_columns / 2;
     //Both planks start at the center
-    plank1.y = center_y;
-    plank1.x = center_x;
+    bottom_plank.horizontal = center_columns;
+    bottom_plank.vertical = bottom;
      
 
     while (true) {
         int ch = getch(); //get direction from user
 
         switch (ch) {
-            case KEY_LEFT: plank1_direction = -1; break;
-            case KEY_RIGHT: plank1_direction = 1; break;
+            case KEY_LEFT: bottom_plank_direction = -1; break;
+            case KEY_RIGHT: bottom_plank_direction = 1; break;
         }
 
         //Move ball according to the direction
-        plank1.y += plank1_direction;
+        bottom_plank.horizontal += bottom_plank_direction;
 
         //Check for collison with the Wall
-        if (plank1.y == 0) {
-            plank1_direction = 1; //change direction to right
-        } else if (plank1.y == max_x - 1) {
-            plank1_direction = -1; //change direction to left
+        if (bottom_plank.horizontal == 0) {
+            bottom_plank_direction = 1; //change direction to right
+        } else if (bottom_plank.horizontal == max_columns - 1) {
+            bottom_plank_direction = -1; //change direction to left
         }
         
         clear();
         //Render the ball
-        mvprintw(plank1.x, plank1.y, "---");
+        mvprintw(bottom_plank.vertical, bottom_plank.horizontal, "---");
     }
 }
 
