@@ -7,7 +7,9 @@
 //Plank movement
 //Collision detection
 //Render
-
+/*
+2. 
+*/
 void game();
 
 #include <ncurses.h>
@@ -34,16 +36,15 @@ void game(){
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     int left = 0;
-    int right = max_x;
-    int center_x = max_x / 2;
+    int right = max_y;
+    int center_x = max_y / 2;
     int top = 0;
-    int down = max_y;
-    int center_y = max_y / 2;
-    //Both planks start at the center starts at the center
-    plank1.y = top;
+    int down = max_x;
+    int center_y = max_x / 2;
+    //Both planks start at the center
+    plank1.y = center_y;
     plank1.x = center_x;
-    
-    
+     
 
     while (true) {
         int ch = getch(); //get direction from user
@@ -54,12 +55,12 @@ void game(){
         }
 
         //Move ball according to the direction
-        plank1.x += plank1_direction;
+        plank1.y += plank1_direction;
 
         //Check for collison with the Wall
-        if (plank1.x == 0) {
+        if (plank1.y == 0) {
             plank1_direction = 1; //change direction to right
-        } else if (plank1.x == max_x) {
+        } else if (plank1.y == max_x - 1) {
             plank1_direction = -1; //change direction to left
         }
         
