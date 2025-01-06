@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <cstdlib>
+#include <vector>
 
 struct Coordinate {
     int horizontal, vertical;
@@ -22,7 +23,10 @@ int main () {
 }
 
 void game(){
-    Coordinate ball, bottom_plank, top_plank;
+    //Initialize game variables
+    Coordinate ball;
+    std::vector<Coordinate> bottom_plank(3);
+    std::vector<Coordinate> top_plank(3);
     int bottom_plank_direction = 1; //Initial direction is right
     int top_plank_direction = 1; //Initial direction is right
     int max_rows, max_columns;
@@ -33,12 +37,14 @@ void game(){
     int bottom = max_rows - 1;
     int center_rows = max_rows / 2;
     int center_columns = max_columns / 2;
-    //bottom_plank starts at bottom center
-    bottom_plank.horizontal = center_columns;
-    bottom_plank.vertical = bottom;
-    //top_plank starts at top center
-    top_plank.horizontal = center_columns;
-    top_plank.vertical = top;
+    for (int i = 0; i < 3; i++) {
+        //bottom_plank starts at bottom center
+        bottom_plank[i].horizontal = center_columns + i;
+        bottom_plank[i].vertical = bottom;
+        //top_plank starts at top center
+        top_plank[i].horizontal = center_columns + i;
+        top_plank[i].vertical = top;
+    }
 
     while (true) {
         int ch = getch(); //get direction from user
@@ -52,26 +58,32 @@ void game(){
         topPlankDirection(top_plank_direction, ball, center_columns);
 
         //Move plank according to the direction
-        bottom_plank.horizontal += bottom_plank_direction;
-        top_plank.horizontal += top_plank_direction;
-
-        //Check for collison with the Wall
-        if (bottom_plank.horizontal == 0) {
-            bottom_plank_direction = 1; //change direction to right
-        } else if (bottom_plank.horizontal == max_columns - 3) {
-            bottom_plank_direction = -1; //change direction to left
+        for (int i = 0; i < 3; i++) {
+            bottom_plank[i].horizontal += bottom_plank_direction;
+            top_plank[i].horizontal += top_plank_direction;
         }
-        //check for the top plank
-        if (top_plank.horizontal == 0) {
-            top_plank_direction = 1; //change direction to right
-        } else if (top_plank.horizontal == max_columns - 3) {
-            top_plank_direction = -1; //change direction to left
-        } 
+        
+        //Check for collison with the Wall
+        for (int i = 0; i < 3; i++) {
+            if (bottom_plank[i].horizontal == 0) {
+                bottom_plank_direction = 1; //change direction to right
+            } else if (bottom_plank[i].horizontal == max_columns - 3) {
+                bottom_plank_direction = -1; //change direction to left
+            }
+            //check for the top plank
+            if (top_plank[i].horizontal == 0) {
+                top_plank_direction = 1; //change direction to right
+            } else if (top_plank[i].horizontal == max_columns - 3) {
+                top_plank_direction = -1; //change direction to left
+            }
+        }
         
         clear();
         //Render the planks
-        mvprintw(bottom_plank.vertical, bottom_plank.horizontal, "---");
-        mvprintw(top_plank.vertical, top_plank.horizontal, "---");
+        for (int i = 0; i < 3; i++) {
+            mvprintw(bottom_plank[i].vertical, bottom_plank[i].horizontal, "-");
+            mvprintw(top_plank[i].vertical, top_plank[i].horizontal, "-");
+        }
     }
 }
 
