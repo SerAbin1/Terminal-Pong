@@ -90,18 +90,15 @@ void game(){
         }
         
         //Check for plank collision with wall
-        for (int i = 0; i < 3; i++) {
-            if (bottom_plank[i].horizontal == left) {
-                bottom_plank_direction = 1; //change direction to right
-            } else if (bottom_plank[i].horizontal == max_columns - 3) {
-                bottom_plank_direction = -1; //change direction to left
-            }
-            //check for the top plank
-            if (top_plank[i].horizontal == left) {
-                top_plank_direction = 1; //change direction to right
-            } else if (top_plank[i].horizontal == max_columns - 3) {
-                top_plank_direction = -1; //change direction to left
-            }
+        if (bottom_plank[0].horizontal == left) {
+            bottom_plank_direction = 1; //change direction to right
+        } else if (bottom_plank[2].horizontal == max_columns - 1) {                bottom_plank_direction = -1; //change direction to left
+        }
+        //check for the top plank
+        if (top_plank[0].horizontal == left) {
+             top_plank_direction = 1; //change direction to right
+        } else if (top_plank[2].horizontal == max_columns - 1) {
+              top_plank_direction = -1; //change direction to left
         }
 
         //Check for ball collision with wall
