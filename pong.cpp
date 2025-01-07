@@ -1,4 +1,8 @@
 /*1. A ball_direction struct to keep track of ball_direction
+=======
+
+1. A ball_direction struct to keep track of ball_direction
+>>>>>>> ball
 2. Initialize ball_direction to right
 Lets keep things simple for now. If the ball hits the left plank it goes left diagonally.
 if the ball its center, it goes straight.
@@ -141,6 +145,7 @@ void game(){
         clear();
         //Render the ball
         mvprintw(ball.vertical, ball.horizontal, "O");
+
         //Render the planks
         for (int i = 0; i < 3; i++) {
             mvprintw(bottom_plank[i].vertical, bottom_plank[i].horizontal, "-");
