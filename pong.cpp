@@ -138,7 +138,6 @@ void game(){
             ball_direction.horizontal = 2; //right
         }
 
-}
         clear();
         //Render the ball
         mvprintw(ball.vertical, ball.horizontal, "O");
@@ -147,6 +146,7 @@ void game(){
             mvprintw(bottom_plank[i].vertical, bottom_plank[i].horizontal, "-");
             mvprintw(top_plank[i].vertical, top_plank[i].horizontal, "-");
         }
+    }
 }
 
 void topPlankDirection(int& top_plank_direction, Coordinate ball, int center) {
