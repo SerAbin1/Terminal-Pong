@@ -1,15 +1,3 @@
-/*1. A ball_direction struct to keep track of ball_direction
-=======
-
-1. A ball_direction struct to keep track of ball_direction
->>>>>>> ball
-2. Initialize ball_direction to right
-Lets keep things simple for now. If the ball hits the left plank it goes left diagonally.
-if the ball its center, it goes straight.
-if right, right diaginally
-3. if ball.x equal to plank[0].x then ball_direction is left diagonal
-*/
-
 #include <ncurses.h>
 #include <cstdlib>
 #include <vector>
@@ -25,6 +13,8 @@ int LAST_P = 2;
 
 void topPlankDirection(int&, Coordinate, std::vector<Coordinate>);
 void game();
+void initializePlanks(std::vector<Coordinate>&, std::vector<Coordinate>&, int, int, int);
+void plankWallCollision(std::vector<Coordinate>, int , int&); 
 
 int main () {
     initscr();//Initialize ncurses for terminal-based graphical interface.
@@ -54,7 +44,6 @@ void game(){
     int center_rows = max_rows / 2;
     int center_columns = max_columns / 2;
 
-    //set initial directions
     int top_plank_direction = 1; //Initial direction is right
     int bottom_plank_direction = 1; //Initial direction is right
     ball_direction.vertical = 1; //down
@@ -64,15 +53,7 @@ void game(){
     ball.vertical = center_rows;
     ball.horizontal = center_columns;
 
-    //Initialize the planks
-    for (int i = 0; i < 3; i++) {
-        //bottom_plank starts at bottom center
-        bottom_plank[i].horizontal = center_columns + i;
-        bottom_plank[i].vertical = bottom;
-        //top_plank starts at top center
-        top_plank[i].horizontal = center_columns + i;
-        top_plank[i].vertical = top;
-    }
+    initializePlanks(bottom_plank, top_plank, center_columns, bottom, top); //Initialize the planks 
 
     while (true) {
         int ch = getch(); //get direction from user
@@ -95,17 +76,8 @@ void game(){
             top_plank[i].horizontal += top_plank_direction;
         }
         
-        //Check for plank collision with wall
-        if (bottom_plank[FIRST_P].horizontal == left) {
-            bottom_plank_direction = 1; //change direction to right
-        } else if (bottom_plank[LAST_P].horizontal == max_columns - 1) {                bottom_plank_direction = -1; //change direction to left
-        }
-        //check for the top plank
-        if (top_plank[FIRST_P].horizontal == left) {
-             top_plank_direction = 1; //change direction to right
-        } else if (top_plank[LAST_P].horizontal == max_columns - 1) {
-              top_plank_direction = -1; //change direction to left
-        }
+        plankWallCollision(bottom_plank, left, bottom_plank_direction); //Check bottom_plank collision with wall
+        plankWallCollision(top_plank, left, top_plank_direction); //Check top_plank collision with wall
 
         //Check for ball collision with wall
         if (ball.horizontal == left + 1) {
@@ -158,6 +130,28 @@ void game(){
         }
     }
 }
+
+void initializePlanks(std::vector<Coordinate>& bottom_plank, std::vector<Coordinate>& top_plank, int center_columns, int bottom, int top) {
+   for (int i = 0; i < 3; i++) {
+        //bottom_plank starts at bottom center
+        bottom_plank[i].horizontal = center_columns + i;
+        bottom_plank[i].vertical = bottom;
+        //top_plank starts at top center
+        top_plank[i].horizontal = center_columns + i;
+        top_plank[i].vertical = top;
+    } 
+}
+
+void plankWallCollision(std::vector<Coordinate> plank, int left, int& plank_direction) {
+    int max_columns = COLS; //get max_columns
+    if (plank[FIRST_P].horizontal == left) {
+            plank_direction = 1; //right
+    } 
+    else if (plank[LAST_P].horizontal == max_columns - 1) {
+        plank_direction = -1; //left
+    }
+}
+ 
 
 void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Coordinate> top_plank) {
     int random = rand() % 10;
