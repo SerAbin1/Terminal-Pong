@@ -14,7 +14,8 @@ int LAST_P = 2;
 void topPlankDirection(int&, Coordinate, std::vector<Coordinate>);
 void game();
 void initializePlanks(std::vector<Coordinate>&, std::vector<Coordinate>&, int, int, int);
-void plankWallCollision(std::vector<Coordinate>, int , int&); 
+void plankWallCollision(std::vector<Coordinate>, int , int&);
+void ballPlankCollision(Coordinate&, std::vector<Coordinate>, Coordinate&);
 
 int main () {
     initscr();//Initialize ncurses for terminal-based graphical interface.
@@ -86,38 +87,9 @@ void game(){
         else if (ball.horizontal == max_columns -1) {
             ball_direction.horizontal = -1; //Direction to left
         }
-        //Check for bottom_plank collison with ball
-        if (ball.horizontal == bottom_plank[FIRST_P].horizontal && ball.vertical == bottom_plank[FIRST_P].vertical) {
-            //left diagonal if collided with left side of the bottom plank
-            ball_direction.vertical = -1; //up
-            ball_direction.horizontal = -2; //left
-        }
-        else if (ball.horizontal == bottom_plank[CENTER_P].horizontal && ball.vertical == bottom_plank[CENTER_P].vertical) {
-            //straight up if collided with centre of the plank
-            ball_direction.vertical = -1; //up
-            ball_direction.horizontal = 0; //nill
-        }
-        else if (ball.horizontal == bottom_plank[LAST_P].horizontal && ball.vertical == bottom_plank[LAST_P].vertical) {
-            //right diagonal if collided with centre of the plank
-            ball_direction.vertical = -1; //up
-            ball_direction.horizontal = 2; //right
-        }
-        //Check for top_plank collison with plank
-        if (ball.horizontal == top_plank[FIRST_P].horizontal && ball.vertical == top_plank[FIRST_P].vertical) {
-            //left diagonal if collided with left side of the bottom plank
-            ball_direction.vertical = 1; //down
-            ball_direction.horizontal = -2; //left
-        }
-        else if (ball.horizontal == top_plank[CENTER_P].horizontal && ball.vertical == top_plank[CENTER_P].vertical) {
-            //straight down if collided with centre of the plank
-            ball_direction.vertical = 1; //up
-            ball_direction.horizontal = 0; //nill
-        }
-        else if (ball.horizontal == top_plank[LAST_P].horizontal && ball.vertical == top_plank[LAST_P].vertical) {
-            //right diagonal if collided with centre of the plank
-            ball_direction.vertical = 1; //up
-            ball_direction.horizontal = 2; //right
-        }
+        
+        ballPlankCollision(ball, bottom_plank, ball_direction);
+        ballPlankCollision(ball, top_plank, ball_direction);
 
         clear();
         //Render the ball
@@ -151,7 +123,24 @@ void plankWallCollision(std::vector<Coordinate> plank, int left, int& plank_dire
         plank_direction = -1; //left
     }
 }
- 
+
+void ballPlankCollision(Coordinate& ball, std::vector<Coordinate> plank, Coordinate& ball_direction) {
+        if (ball.horizontal == plank[FIRST_P].horizontal && ball.vertical == plank[FIRST_P].vertical) {
+            //left diagonal if collided with left side of the bottom plank
+            ball_direction.vertical = -1; //up
+            ball_direction.horizontal = -2; //left
+        }
+        else if (ball.horizontal == plank[CENTER_P].horizontal && ball.vertical == plank[CENTER_P].vertical) {
+            //straight up if collided with centre of the plank
+            ball_direction.vertical = -1; //up
+            ball_direction.horizontal = 0; //nill
+        }
+        else if (ball.horizontal == plank[LAST_P].horizontal && ball.vertical == plank[LAST_P].vertical) {
+            //right diagonal if collided with centre of the plank
+            ball_direction.vertical = -1; //up
+            ball_direction.horizontal = 2; //right
+        }
+}
 
 void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Coordinate> top_plank) {
     int random = rand() % 10;
