@@ -76,10 +76,10 @@ void game(){
 }
 
 void topPlankDirection(int& top_plank_direction, Coordinate ball, int center) {
-    int random = rand() % 100;
+    int random = rand() % 10;
     //if ball is on right side, give weight to right movement
     if (ball.horizontal > center) {
-        if (random < 70) {
+        if (random < 7) {
             top_plank_direction = 1;
         }
         else {
@@ -88,7 +88,7 @@ void topPlankDirection(int& top_plank_direction, Coordinate ball, int center) {
     }
     //if ball is on left side, give weight to left movement
     else {
-        if (random < 70) {
+        if (random < 7) {
             top_plank_direction = -1;
         }
         else {
