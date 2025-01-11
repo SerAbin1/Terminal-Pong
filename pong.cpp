@@ -24,7 +24,7 @@ int main () {
     cbreak(); //Disable line buffering to proccess input immediately withou waiting for enter.
     keypad(stdscr, TRUE); //Enable arrow key and special key handling.
     curs_set(0); //To hide the cursor.
-    timeout(100); // Non-blocking input (100ms delay)
+    timeout(42); // Non-blocking input (100ms delay)
 
     game();
     endwin();
@@ -67,7 +67,7 @@ void game(){
         
         //Get top_plank_direction
         topPlankDirection(top_plank_direction, ball, top_plank);
-
+        
         //Move ball according to the direction
         ball.vertical += ball_direction.vertical;
         ball.horizontal += ball_direction.horizontal;
@@ -86,7 +86,7 @@ void game(){
         //Check for ball collision with planks and change direction accordingly
         ballPlankCollision(ball, bottom_plank, ball_direction); 
         ballPlankCollision(ball, top_plank, ball_direction);
-
+        
         clear();
         //Render the ball
         mvprintw(ball.vertical, ball.horizontal, "O");
@@ -151,26 +151,11 @@ void ballPlankCollision(Coordinate ball, std::vector<Coordinate> plank, Coordina
 }
 
 void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Coordinate> top_plank) {
-    int random = rand() % 10;
-    //if ball is to the right of plank, move plank right
+    //if ball is to the right of plank, move plank right,
+    //otherwise move it left
     if (ball.horizontal > top_plank[FIRST_P].horizontal) {
-        if (random < 9) {
             top_plank_direction = 1;
-        }
-        else {
+    } else {
             top_plank_direction = -1;
-        }
-    }
-    //if ball is on left side, give weight to left movement
-    else if (ball.horizontal < top_plank[LAST_P].horizontal) {
-        if (random < 9) {
-            top_plank_direction = -1;
-        }
-        else {
-            top_plank_direction = 1;
-        }
-    }
-    else {
-        top_plank_direction = 0;
     }
 }
