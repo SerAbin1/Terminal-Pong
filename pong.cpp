@@ -46,8 +46,8 @@ void game(){
     int center_rows = max_rows / 2;
     int center_columns = max_columns / 2;
 
-    int top_plank_direction = 1; //Initial direction is right
-    int bottom_plank_direction = 0; //Initial direction is right
+    int top_plank_direction = 0; //No initial movement
+    int bottom_plank_direction = 0; //No initial movement
     ball_direction.vertical = 1; //down
     ball_direction.horizontal = 0; //no movement
 
@@ -93,10 +93,10 @@ void game(){
 void initializePlanks(std::vector<Coordinate>& bottom_plank, std::vector<Coordinate>& top_plank, int center_columns, int bottom, int top) {
    for (int i = 0; i < 3; i++) {
         //bottom_plank starts at bottom center
-        bottom_plank[i].horizontal = center_columns + i;
+        bottom_plank[i].horizontal = center_columns - 1 + i;
         bottom_plank[i].vertical = bottom;
         //top_plank starts at top center
-        top_plank[i].horizontal = center_columns + i;
+        top_plank[i].horizontal = center_columns - 1 + i;
         top_plank[i].vertical = top;
     } 
 }
@@ -148,9 +148,9 @@ void ballPlankCollision(Coordinate ball, std::vector<Coordinate> plank, Coordina
 void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Coordinate> top_plank) {
     //if ball is to the right of plank, move plank right,
     //otherwise move it left
-    if (ball.horizontal > top_plank[FIRST_P].horizontal) {
+    if (ball.horizontal > top_plank[CENTER_P].horizontal) {
             top_plank_direction = 1;
-    } else if (ball.horizontal < top_plank[FIRST_P].horizontal) {
+    } else if (ball.horizontal < top_plank[CENTER_P].horizontal) {
             top_plank_direction = -1;
     }
     else {
