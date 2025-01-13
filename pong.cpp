@@ -149,9 +149,9 @@ void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Co
     //if ball is to the right of plank, move plank right,
     //otherwise move it left
     if (ball.horizontal > top_plank[CENTER_P].horizontal) {
-            top_plank_direction = 1;
+            top_plank_direction = 2;
     } else if (ball.horizontal < top_plank[CENTER_P].horizontal) {
-            top_plank_direction = -1;
+            top_plank_direction = -2;
     }
     else {
         top_plank_direction = 0;
