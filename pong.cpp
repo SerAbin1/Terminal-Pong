@@ -14,7 +14,7 @@ int LAST_P = 2;
 void topPlankDirection(int&, Coordinate, std::vector<Coordinate>);
 void game();
 void initializePlanks(std::vector<Coordinate>&, std::vector<Coordinate>&, int, int, int);
-void plankWallCollision(std::vector<Coordinate>, int , int&);
+void movePlank(std::vector<Coordinate>&, int , int&);
 void ballWallCollision(Coordinate, Coordinate&);
 void ballPlankCollision(Coordinate, std::vector<Coordinate>, Coordinate&);
 
@@ -72,14 +72,9 @@ void game(){
         ball.vertical += ball_direction.vertical;
         ball.horizontal += ball_direction.horizontal;
 
-        //Move plank according to the direction
-        for (int i = 0; i < 3; i++) {
-            bottom_plank[i].horizontal += bottom_plank_direction;
-            top_plank[i].horizontal += top_plank_direction;
-        }
-        
-        plankWallCollision(bottom_plank, left, bottom_plank_direction); //Check bottom_plank collision with wall
-        plankWallCollision(top_plank, left, top_plank_direction); //Check top_plank collision with wall
+        //Move plank according to the direction with proper bound checking
+        movePlank(bottom_plank, left, bottom_plank_direction);
+        movePlank(top_plank, left, top_plank_direction);
         
         ballWallCollision(ball, ball_direction); //Check for ball collision with wallll
         
@@ -109,14 +104,17 @@ void initializePlanks(std::vector<Coordinate>& bottom_plank, std::vector<Coordin
     } 
 }
 
-void plankWallCollision(std::vector<Coordinate> plank, int left, int& plank_direction) {
-    int max_columns = COLS; //get max_columns
+void movePlank(std::vector<Coordinate>& plank, int left, int& plank_direction) {
+    int max_columns = COLS - 1; //get max_columns
 
     if (plank[FIRST_P].horizontal == left) {
             plank_direction = 1; //right
     } 
-    else if (plank[LAST_P].horizontal == max_columns - 1) {
+    else if (plank[LAST_P].horizontal == max_columns) {
         plank_direction = -1; //left
+    }
+    for (int i = 0; i < 3; i++) {
+        plank[i].horizontal += plank_direction;
     }
 }
 
