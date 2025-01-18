@@ -16,7 +16,8 @@ void game();
 void initializePlanks(std::vector<Coordinate>&, std::vector<Coordinate>&, int, int, int);
 void movePlank(std::vector<Coordinate>&, int , int&);
 void moveBall(Coordinate&, Coordinate&);
-void ballPlankCollision(Coordinate, std::vector<Coordinate>, Coordinate&);
+void ballPlankCollision(Coordinate, std::vector<Coordinate>, Coordinate&); 
+void gameRound(Coordinate, bool&, int, int);
 
 int main () {
     initscr();//Initialize ncurses for terminal-based graphical interface.
@@ -33,6 +34,7 @@ int main () {
 
 void game(){
     //Initialize game variables
+    bool game_over = false;
     Coordinate ball;
     Coordinate ball_direction;
     std::vector<Coordinate> bottom_plank(3);
@@ -57,7 +59,7 @@ void game(){
 
     initializePlanks(bottom_plank, top_plank, center_columns, bottom, top); //Initialize the planks 
 
-    while (true) {
+    while (!game_over) {
         int ch = getch(); //get direction from user
 
         switch (ch) {
@@ -78,6 +80,9 @@ void game(){
         
         //Check for collsion and move ball
         moveBall(ball, ball_direction);
+
+        //reset game if scored && track scored
+        gameRound(ball, game_over, bottom, top);
 
         clear();
         //Render the ball
@@ -155,5 +160,19 @@ void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Co
     }
     else {
         top_plank_direction = 0;
+    }
+}
+
+void gameRound(Coordinate ball, bool& game_over, int bottom, int top) {
+    static int top_plank_score;
+    static int bottom_plank_score;
+
+    if (ball.vertical > bottom) {
+        top_plank_score += 1;
+        game_over = true;
+    }
+    if (ball.vertical < top) {
+        bottom_plank_score += 1;
+        game_over = true;
     }
 }
