@@ -18,6 +18,7 @@ void movePlank(std::vector<Coordinate>&, int , int&);
 void moveBall(Coordinate&, Coordinate&);
 void ballPlankCollision(Coordinate, std::vector<Coordinate>, Coordinate&); 
 void gameRound(Coordinate, bool&, int, int);
+void gameMenu(int, int);
 
 int main () {
     initscr();//Initialize ncurses for terminal-based graphical interface.
@@ -81,9 +82,7 @@ void game(){
         //Check for collsion and move ball
         moveBall(ball, ball_direction);
 
-        //reset game if scored && track scored
-        gameRound(ball, game_over, bottom, top);
-
+        
         clear();
         //Render the ball
         mvprintw(ball.vertical, ball.horizontal, "O");
@@ -92,6 +91,9 @@ void game(){
             mvprintw(bottom_plank[i].vertical, bottom_plank[i].horizontal, "-");
             mvprintw(top_plank[i].vertical, top_plank[i].horizontal, "-");
         }
+       //reset game if scored && track scored
+        gameRound(ball, game_over, bottom, top);
+ 
     }
 }
 
@@ -167,12 +169,66 @@ void gameRound(Coordinate ball, bool& game_over, int bottom, int top) {
     static int top_plank_score;
     static int bottom_plank_score;
 
-    if (ball.vertical > bottom) {
+   if (top_plank_score >= 5 || bottom_plank_score >= 5) {
+        game_over = true;
+        gameMenu(top_plank_score, bottom_plank_score);
+    } 
+    
+   else if (ball.vertical > bottom) {
         top_plank_score += 1;
         game_over = true;
-    }
-    if (ball.vertical < top) {
+        game();
+   }
+   else if (ball.vertical < top) {
         bottom_plank_score += 1;
         game_over = true;
+        game();
+   }
+}
+
+void gameMenu(int top_score, int bottom_score) {
+    int center_rows = LINES / 2;
+    int winner_pos_v = center_rows - (center_rows / 2);
+    int center_columns = COLS / 2;
+    int winner_pos_h = center_columns - 5;
+    clear();
+    if (bottom_score >= 5) {
+       mvprintw(winner_pos_v, winner_pos_h, "You Win!"); 
     }
+    else {
+       mvprintw(winner_pos_v, winner_pos_h, "You Lose!"); 
+    }
+    mvprintw(winner_pos_v + 3, winner_pos_h + 2, "Your score = %d", bottom_score);
+    mvprintw(winner_pos_v + 4, winner_pos_h + 2, "AI score = %d", top_score);
+    
+    int ch;
+    int highlight = 1;
+    int choice = 0;
+
+    while (true) {
+        ch = getch();
+        switch (ch) {
+            case KEY_UP:
+                highlight = (highlight == 1) ? 2 : 1;
+                break;
+            case KEY_DOWN:
+                highlight = (highlight == 2) ? 1 : 2;
+                break;
+            case 10:
+                choice = highlight;
+                break;
+        }
+
+        if (highlight == 1) {
+            mvprintw(center_rows, center_columns, "> Play");
+            mvprintw(center_rows + 1, center_columns, "  Quit");
+        }
+        else if (highlight == 2) {
+            mvprintw(center_rows, center_columns, "  Play");
+            mvprintw(center_rows + 1, center_columns, "> Quit");
+        }
+        if (choice != 0) break;
+    }
+    if (choice == 1) game();
+    else if (choice == 2) endwin(); 
 }
