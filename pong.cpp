@@ -6,12 +6,6 @@ struct Coordinate {
     int horizontal, vertical;
 };
 
-//Name individual parts of the planks for readability and maintainence
-int FIRST_P = 0;
-int CENTER_P = 1;
-int LAST_P = 2;
-bool GAME_OVER = false;
-
 void topPlankDirection(int&, Coordinate, std::vector<Coordinate>);
 void game();
 void initializePlanks(std::vector<Coordinate>&, std::vector<Coordinate>&, int, int, int);
@@ -20,6 +14,24 @@ void moveBall(Coordinate&, Coordinate&);
 void ballPlankCollision(Coordinate, std::vector<Coordinate>, Coordinate&); 
 void gameRound(Coordinate, bool&, int, int);
 void gameMenu(int, int);
+
+int FIRST_P = 0;
+int CENTER_P = 1;
+int LAST_P = 2;
+
+bool GAME_OVER = false;
+
+enum Direction {
+    LEFT = -1,
+    RIGHT = 1,
+    NONE = 0
+};
+
+enum Bounce {
+    BOUNCE_LEFT = -2,
+    BOUNCE_RIGHT = 2,
+    STRAIGHT = 0
+};
 
 int main () {
     initscr();//Initialize ncurses for terminal-based graphical interface.
@@ -115,10 +127,10 @@ void movePlank(std::vector<Coordinate>& plank, int left, int& plank_direction) {
     int max_columns = COLS - 1; //get max_columns
 
     if (plank[FIRST_P].horizontal == left) {
-            plank_direction = 1; //right
+            plank_direction = RIGHT;
     } 
     else if (plank[LAST_P].horizontal == max_columns) {
-        plank_direction = -1; //left
+        plank_direction = LEFT;
     }
     for (int i = 0; i < 3; i++) {
         plank[i].horizontal += plank_direction;
@@ -142,15 +154,15 @@ void ballPlankCollision(Coordinate ball, std::vector<Coordinate> plank, Coordina
     if (ball.vertical == plank[FIRST_P].vertical) {
        if (ball.horizontal == plank[FIRST_P].horizontal) {
             ball_direction.vertical = -ball_direction.vertical; //Reverse direction
-            ball_direction.horizontal = -2; //Bounce left
+            ball_direction.horizontal = BOUNCE_LEFT; //Bounce left
        }
        else if (ball.horizontal == plank[CENTER_P].horizontal) {
            ball_direction.vertical = -ball_direction.vertical; //Reverse direction
-            ball_direction.horizontal = 0; //nill
+            ball_direction.horizontal = STRAIGHT; //nill
        }
        else if (ball.horizontal == plank[LAST_P].horizontal) {
             ball_direction.vertical = -ball_direction.vertical; //Reverse direction
-            ball_direction.horizontal = 2; //Bounce right
+            ball_direction.horizontal = BOUNCE_RIGHT; //Bounce right
        } 
     }      
 }
@@ -158,8 +170,8 @@ void ballPlankCollision(Coordinate ball, std::vector<Coordinate> plank, Coordina
 void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Coordinate> top_plank) {
     //if ball is to the right of plank, move plank right,
     //otherwise move it left
-    if (ball.horizontal > top_plank[CENTER_P].horizontal) {
-            top_plank_direction = 1;
+    if (ball.horizontal > top_plank[LAST_P].horizontal) {
+            top_plank_direction = RIGHT;
     } else if (ball.horizontal < top_plank[CENTER_P].horizontal) {
             top_plank_direction = -2;
     }
