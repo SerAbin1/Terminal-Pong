@@ -10,6 +10,7 @@ struct Coordinate {
 int FIRST_P = 0;
 int CENTER_P = 1;
 int LAST_P = 2;
+bool GAME_OVER = false;
 
 void topPlankDirection(int&, Coordinate, std::vector<Coordinate>);
 void game();
@@ -28,7 +29,9 @@ int main () {
     curs_set(0); //To hide the cursor.
     timeout(100); // Non-blocking input (100ms delay)
 
-    game();
+    while (!GAME_OVER) {
+        game();
+    }
     endwin();
     return 0;
 }
@@ -156,7 +159,7 @@ void topPlankDirection(int& top_plank_direction, Coordinate ball, std::vector<Co
     //if ball is to the right of plank, move plank right,
     //otherwise move it left
     if (ball.horizontal > top_plank[CENTER_P].horizontal) {
-            top_plank_direction = 2;
+            top_plank_direction = 1;
     } else if (ball.horizontal < top_plank[CENTER_P].horizontal) {
             top_plank_direction = -2;
     }
@@ -172,17 +175,16 @@ void gameRound(Coordinate ball, bool& game_over, int bottom, int top) {
    if (top_plank_score >= 5 || bottom_plank_score >= 5) {
         game_over = true;
         gameMenu(top_plank_score, bottom_plank_score);
+        top_plank_score = 0; bottom_plank_score = 0;
     } 
     
    else if (ball.vertical > bottom) {
         top_plank_score += 1;
         game_over = true;
-        game();
    }
    else if (ball.vertical < top) {
         bottom_plank_score += 1;
         game_over = true;
-        game();
    }
 }
 
@@ -229,6 +231,6 @@ void gameMenu(int top_score, int bottom_score) {
         }
         if (choice != 0) break;
     }
-    if (choice == 1) game();
-    else if (choice == 2) endwin(); 
+    if (choice == 1) GAME_OVER = false;
+    else if (choice == 2) GAME_OVER = true; 
 }
